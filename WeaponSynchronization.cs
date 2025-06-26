@@ -177,13 +177,13 @@ internal class WeaponSynchronization
 
 			foreach (var row in playerSkins)
 			{
-				int weaponDefIndex = row.weapon_defindex ?? 0;
-				int weaponPaintId = row.weapon_paint_id ?? 0;
-				float weaponWear = row.weapon_wear ?? 0f;
-				int weaponSeed = row.weapon_seed ?? 0;
+				int weaponDefIndex = (int?)row.weapon_defindex ?? 0;
+				int weaponPaintId = (int?)row.weapon_paint_id ?? 0;
+				float weaponWear = (float?)row.weapon_wear ?? 0f;
+				int weaponSeed = (int?)row.weapon_seed ?? 0;
 				string weaponNameTag = row.weapon_nametag ?? "";
-				bool weaponStatTrak = row.weapon_stattrak ?? false;
-				int weaponStatTrakCount = row.weapon_stattrak_count ?? 0;
+				bool weaponStatTrak = (long?)row.weapon_stattrak == 1;
+				int weaponStatTrakCount = (int?)row.weapon_stattrak_count ?? 0;
 
 				CsTeam weaponTeam = row.weapon_team switch
 				{
@@ -389,7 +389,7 @@ internal class WeaponSynchronization
 	{
 		if (!_config.Additional.KnifeEnabled || string.IsNullOrEmpty(player.SteamId) || string.IsNullOrEmpty(knife) || teams.Length == 0) return;
 
-		const string query = "INSERT INTO `wp_player_knife` (`steamid`, `weapon_team`, `knife`) VALUES(@steamid, @team, @newKnife) ON CONFLICT(`steamid`) DO UPDATE SET `knife` = @newKnife";
+		const string query = "INSERT INTO `wp_player_knife` (`steamid`, `weapon_team`, `knife`) VALUES(@steamid, @team, @newKnife) ON CONFLICT(`steamid`, `weapon_team`) DO UPDATE SET `knife` = @newKnife";
 
 		try
 		{
