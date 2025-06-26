@@ -1,8 +1,8 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
-using MySqlConnector;
 
 namespace WeaponPaints;
 
@@ -12,8 +12,8 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 	internal static WeaponPaints Instance { get; private set; } = new();
 
 	public WeaponPaintsConfig Config { get; set; } = new();
-    private static WeaponPaintsConfig _config { get; set; } = new();
-    public override string ModuleAuthor => "Nereziel & daffyy";
+	private static WeaponPaintsConfig _config { get; set; } = new();
+	public override string ModuleAuthor => "Nereziel & daffyy";
 	public override string ModuleDescription => "Skin, gloves, agents and knife selector, standalone and web-based";
 	public override string ModuleName => "WeaponPaints";
 	public override string ModuleVersion => "3.1c";
@@ -25,7 +25,7 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 		if (hotReload)
 		{
 			OnMapStart(string.Empty);
-			
+
 			GPlayerWeaponsInfo.Clear();
 			GPlayersKnife.Clear();
 			GPlayersGlove.Clear();
@@ -34,10 +34,10 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 			GPlayersMusic.Clear();
 
 			foreach (var player in Enumerable
-				         .OfType<CCSPlayerController>(Utilities.GetPlayers().TakeWhile(_ => WeaponSync != null))
-				         .Where(player => player.IsValid &&
-					         !string.IsNullOrEmpty(player.IpAddress) && player is
-						         { IsBot: false, Connected: PlayerConnectedState.PlayerConnected }))
+						 .OfType<CCSPlayerController>(Utilities.GetPlayers().TakeWhile(_ => WeaponSync != null))
+						 .Where(player => player.IsValid &&
+							 !string.IsNullOrEmpty(player.IpAddress) && player is
+							 { IsBot: false, Connected: PlayerConnectedState.PlayerConnected }))
 			{
 				var playerInfo = new PlayerInfo
 				{
@@ -70,29 +70,19 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 		Config = config;
 		_config = config;
 
-		if (config.DatabaseHost.Length < 1 || config.DatabaseName.Length < 1 || config.DatabaseUser.Length < 1)
-		{
-			Logger.LogError("You need to setup Database credentials in \"configs/plugins/WeaponPaints/WeaponPaints.json\"!");
-			Unload(false);
-			return;
-		}
-
 		if (!File.Exists(Path.GetDirectoryName(Path.GetDirectoryName(ModuleDirectory)) + "/gamedata/weaponpaints.json"))
 		{
 			Logger.LogError("You need to upload \"weaponpaints.json\" to \"gamedata directory\"!");
 			Unload(false);
 			return;
 		}
-		
-		var builder = new MySqlConnectionStringBuilder
+
+		var builder = new SqliteConnectionStringBuilder
 		{
-			Server = config.DatabaseHost,
-			UserID = config.DatabaseUser,
-			Password = config.DatabasePassword,
-			Database = config.DatabaseName,
-			Port = (uint)config.DatabasePort,
+			DataSource = Path.Combine(ModuleDirectory, "weaponpaints.db"),
+			Mode = SqliteOpenMode.ReadWriteCreate,
 			Pooling = true,
-			MaximumPoolSize = 640,
+			Cache = SqliteCacheMode.Shared
 		};
 
 		Database = new Database(builder.ConnectionString);
@@ -110,7 +100,7 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 		try
 		{
 			MenuApi = MenuCapability.Get();
-			
+
 			if (Config.Additional.KnifeEnabled)
 				SetupKnifeMenu();
 			if (Config.Additional.SkinEnabled)
@@ -123,7 +113,7 @@ public partial class WeaponPaints : BasePlugin, IPluginConfig<WeaponPaintsConfig
 				SetupMusicMenu();
 			if (Config.Additional.PinsEnabled)
 				SetupPinsMenu();
-		
+
 			RegisterCommands();
 		}
 		catch (Exception)

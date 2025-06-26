@@ -1,15 +1,15 @@
-﻿using Microsoft.Extensions.Logging;
-using MySqlConnector;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 
 namespace WeaponPaints
 {
 	public class Database(string dbConnectionString)
 	{
-		public async Task<MySqlConnection> GetConnectionAsync()
+		public async Task<SqliteConnection> GetConnectionAsync()
 		{
 			try
 			{
-				var connection = new MySqlConnection(dbConnectionString);
+				var connection = new SqliteConnection(dbConnectionString);
 				await connection.OpenAsync();
 				return connection;
 			}
