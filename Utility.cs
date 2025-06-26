@@ -37,12 +37,12 @@ namespace WeaponPaints
 					        `weapon_nametag` VARCHAR(128) DEFAULT NULL,
 					        `weapon_stattrak` tinyint(1) NOT NULL DEFAULT 0,
 					        `weapon_stattrak_count` int(10) NOT NULL DEFAULT 0,
-					        `weapon_sticker_0` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0;0;0' -- 'id;schema;x;y;wear;scale;rotation',
-					        `weapon_sticker_1` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0;0;0' -- 'id;schema;x;y;wear;scale;rotation',
-					        `weapon_sticker_2` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0;0;0' -- 'id;schema;x;y;wear;scale;rotation',
-					        `weapon_sticker_3` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0;0;0' -- 'id;schema;x;y;wear;scale;rotation',
-					        `weapon_sticker_4` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0;0;0' -- 'id;schema;x;y;wear;scale;rotation',
-					        `weapon_keychain` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0' COMMENT 'id;x;y;z;seed',
+					        `weapon_sticker_0` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0;0;0', -- 'id;schema;x;y;wear;scale;rotation',
+					        `weapon_sticker_1` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0;0;0', -- 'id;schema;x;y;wear;scale;rotation',
+					        `weapon_sticker_2` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0;0;0', -- 'id;schema;x;y;wear;scale;rotation',
+					        `weapon_sticker_3` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0;0;0', -- 'id;schema;x;y;wear;scale;rotation',
+					        `weapon_sticker_4` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0;0;0', -- 'id;schema;x;y;wear;scale;rotation',
+					        `weapon_keychain` VARCHAR(128) NOT NULL DEFAULT '0;0;0;0;0', -- 'id;x;y;z;seed',
 					        UNIQUE (`steamid`, `weapon_team`, `weapon_defindex`) -- Add unique constraint here
 					    );",
 
